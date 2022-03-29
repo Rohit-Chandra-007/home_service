@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:pin_code_fields/pin_code_fields.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:otp_text_field/otp_field.dart';
+import 'package:otp_text_field/style.dart';
 
 import '../routes/my_route.dart';
 import '../widgets/my_custom_button.dart';
@@ -12,6 +14,7 @@ class VerificationScreen extends StatefulWidget {
 }
 
 class _VerificationScreenState extends State<VerificationScreen> {
+  OtpFieldController otpController = OtpFieldController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -25,6 +28,7 @@ class _VerificationScreenState extends State<VerificationScreen> {
       ),
       body: SingleChildScrollView(
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             Container(
               child: Image.asset("assets/images/mobile_otp.png"),
@@ -33,26 +37,32 @@ class _VerificationScreenState extends State<VerificationScreen> {
               alignment: Alignment.center,
             ),
             const SizedBox(height: 32.0),
-            const Center(
+            Center(
               child: Padding(
-                padding: EdgeInsets.all(24.0),
+                padding: const EdgeInsets.all(24.0),
                 child: Text(
                   "OTP Verification",
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 32.0),
+                  style: GoogleFonts.raleway(
+                      fontSize: 30.0,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.black),
                 ),
               ),
             ),
             RichText(
-              text: const TextSpan(
+              text: TextSpan(
                   text: 'Enter the OTP sent to ',
-                  style: TextStyle(color: Colors.black, fontSize: 18),
+                  style: GoogleFonts.inter(
+                    textStyle: Theme.of(context).textTheme.titleMedium,
+                    fontWeight: FontWeight.w300,
+                  ),
                   children: <TextSpan>[
                     TextSpan(
                       text: '+91 9879878975',
-                      style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold),
+                      style: GoogleFonts.inter(
+                        textStyle: Theme.of(context).textTheme.titleMedium,
+                        fontWeight: FontWeight.w600,
+                      ),
                     )
                   ]),
             ),
@@ -60,47 +70,69 @@ class _VerificationScreenState extends State<VerificationScreen> {
               height: 10.0,
             ),
             Padding(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 32.0, vertical: 10.0),
-              child: PinCodeTextField(
-                length: 4,
-                obscureText: false,
-                animationType: AnimationType.fade,
-                animationDuration: const Duration(milliseconds: 300),
-                //errorAnimationController: errorController, // Pass it here
-                onChanged: (value) {
-                  setState(() {
-                    // currentText = value;
-                  });
-                },
-                appContext: context,
+              padding: const EdgeInsets.only(
+                left: 26,
+                right: 26,
+              ),
+              child: SizedBox(
+                height: 50.0,
+                child: OTPTextField(
+                  textFieldAlignment: MainAxisAlignment.spaceEvenly,
+                  controller: otpController,
+                  length: 4,
+                  fieldWidth: 48,
+                  width: 300.0,
+                  fieldStyle: FieldStyle.underline,
+                  style: GoogleFonts.raleway(
+                      fontSize: 30, fontWeight: FontWeight.w600),
+                  onChanged: (pin) {
+                    print("Changed: " + pin);
+                  },
+                  onCompleted: (pin) {
+                    print("Completed: " + pin);
+                  },
+                ),
               ),
             ),
+            const SizedBox(
+              height: 32.0,
+            ),
             RichText(
-              text: const TextSpan(
+              text: TextSpan(
                   text: 'OTP not received?  ',
-                  style: TextStyle(color: Colors.grey, fontSize: 18),
+                  style: GoogleFonts.inter(
+                      textStyle: Theme.of(context).textTheme.labelLarge,
+                      color: Colors.grey),
                   children: <TextSpan>[
                     TextSpan(
                       text: 'RESEND OTP',
-                      style: TextStyle(color: Colors.blueAccent, fontSize: 18),
+                      style: GoogleFonts.inter(
+                          textStyle: Theme.of(context).textTheme.labelLarge,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.blueAccent),
                     )
                   ]),
             ),
             const SizedBox(
-              height: 15.0,
+              height: 30.0,
             ),
             Material(
               child: InkWell(
-                onTap: () => Navigator.pushNamed(context, MyRoute.addressRoute),
-                child: const MyCustomButton(
-                  buttonColor: Color(0xff171717),
-                  buttonWidget: Text(
-                    "VERIFY & PROCEED",
-                    style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                        fontSize: 18),
+                onTap: () {
+                  otpController.clear();
+                  Navigator.pushNamed(context, MyRoute.addressRoute);
+                },
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 26, right: 26),
+                  child: MyCustomButton(
+                    buttonColor: const Color(0xff171717),
+                    buttonWidget: Text(
+                      "VERIFY & PROCEED",
+                      style: GoogleFonts.inter(
+                          textStyle: Theme.of(context).textTheme.titleMedium,
+                          color: Colors.white,
+                          fontWeight: FontWeight.w500),
+                    ),
                   ),
                 ),
               ),
